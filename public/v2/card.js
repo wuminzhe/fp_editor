@@ -35,7 +35,7 @@ Card.prototype.toImage = function() {
   console.log((this.attrs.posX)+','+(this.attrs.posY)+','+this.attrs.scale+','+this.attrs.rotation);
   // 准备好canvas，往里头放图片，然后根据参数调整，最后输出图片
   var canvas = new fabric.StaticCanvas(fabric.util.createCanvasElement());
-  canvas.setDimensions({width: this.config.imageContainerWidth, height: this.config.imageContainerHeight});
+  canvas.setDimensions({width: this.config.width, height: this.config.height});
   
   // 以下是图片参数
   var scale = this.attrs.scale;
@@ -48,38 +48,24 @@ Card.prototype.toImage = function() {
   // 因为csstransform是根据中心点旋转的，而fabricjs是左上角旋转，所以要fix一下
   var newPoint = fabric.util.rotatePoint(new fabric.Point(left, top), new fabric.Point(left+width/2, top+height/2), fabric.util.degreesToRadians(angle));
   
-  fabric.Image.fromURL(this.config.imageUrl, function(fabricImg) {
-    fabricImg.scale(scale).set({
-      left: newPoint.x,
-      top: newPoint.y,
+  fabric.Image.fromURL(this.config.imageUrl, function(img) {
+    img.scale(scale).set({
+      // _this.config.imageContainerLeft：相对于frame的位置
+      left: newPoint.x+_this.config.imageContainerLeft,
+      top: newPoint.y+_this.config.imageContainerTop,
       angle: angle
     });
-
-    canvas.add(fabricImg);
-    
-    //console.log($(".frame").css('background'));
-    var background = "http://192.168.0.123:3002/v2/images/frame.png";
-    
-    var canvas2 = new fabric.StaticCanvas(fabric.util.createCanvasElement());
-    canvas2.setDimensions({width: _this.config.width, height: _this.config.height});
-    fabric.Image.fromURL(canvas.toDataURL(), function(img1) {
-      img1.set({
-        left: _this.config.imageContainerLeft,
-        top: _this.config.imageContainerTop,
+    background = $(".frame").css("background-image").replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+    fabric.Image.fromURL(background, function(frameImg) {
+      frameImg.set({
+        width: _this.config.width,
+        height: _this.config.height
       });
-      canvas2.add(img1);
-      
-      fabric.Image.fromURL(background, function(img2) {
-        img2.set({
-          width: _this.config.width,
-          height: _this.config.height
-        });
-        canvas2.add(img2);
-        //console.log(canvas2.toDataURL());
-        window.open(canvas2.toDataURL());
-      });
-      
+      canvas.add(img);
+      canvas.add(frameImg);
+      window.open(canvas.toDataURL());
     });
+    
     
   });
 };
