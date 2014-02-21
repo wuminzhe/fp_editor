@@ -36,21 +36,17 @@ $(document).ready(function(){
   //因为csstransform是根据中心点旋转的，而fabricjs是左上角旋转，所以要fix一下
   var newPoint = fabric.util.rotatePoint(new fabric.Point(left, top), new fabric.Point(left+width/2, top+height/2), fabric.util.degreesToRadians(angle));
   
-  fabric.Image.fromURL('./girl.jpg', function(fabricImg) {
+  var url = 'http://img.memeing.cn/2006-1-1-2ae618ae5df22b8ee469fd299b54d7eb73895fd8_crop';
+  fabric.Image.fromURL(url, function(fabricImg) {
     fabricImg.scale(scale).set({
       left: newPoint.x,
       top: newPoint.y,
       angle: angle
+      
     });
 
     canvas.add(fabricImg);
     console.log(canvas.getElement().toDataURL('image/png'));
-  });
-  
-//  fabric.Image.fromURL('./girl.jpg', function(fabricImg) {
-//    fabricImg.scale(sv.scale);
-//    canvas.add(fabricImg);
-//    console.log(canvas.getElement().toDataURL('image/png'));
-//  });
+  }, {crossOrigin : 'anonymous '});
   
 });

@@ -12,7 +12,7 @@
     <input type="text">
   </div> -->
   
-  <div><span style="color: black">按住shift模拟多点触摸</span> <a href="javascript: window.card.toImage();">生成图片</a></div>
+  <div><span style="color: black">按住shift模拟多点触摸</span> <a href="javascript: window.card.toImage(function(data){console.log(data);});">生成图片</a></div>
 
   <div id="card"></div>
 
@@ -24,7 +24,7 @@
   
   <script src="../lib/jquery-1.9.1.min.js"></script>
   <script src="../lib/hammer.min.js"></script>
-  <script src="../lib/fabric.js"></script>
+  <script src="../lib/fabric.min.js"></script>
   <script src="../lib/hammer.fakemultitouch.js"></script>
   <script src="../lib/hammer.showtouches.js"></script>
   

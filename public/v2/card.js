@@ -30,7 +30,8 @@ var Card = function(el, config) {
 
 };
 
-Card.prototype.toImage = function() {
+//cb(imageBase64Url)
+Card.prototype.toImage = function(cb) {
   var _this = this;
   console.log((this.attrs.posX)+','+(this.attrs.posY)+','+this.attrs.scale+','+this.attrs.rotation);
   // 准备好canvas，往里头放图片，然后根据参数调整，最后输出图片
@@ -63,17 +64,18 @@ Card.prototype.toImage = function() {
       });
       canvas.add(img);
       canvas.add(frameImg);
-      window.open(canvas.toDataURL());
+      cb(canvas.toDataURL({'format': 'jpg', 'quality': 0.7}));
     });
     
     
-  });
+  }, {crossOrigin : 'anonymous'});
+
 };
 
 Card.prototype.buildHtml = function(imageUrl) {
   var htmlText = 
   '<div class="image-container">'+
-    '<img class="image" src="'+imageUrl+'"/>'+
+    '<img class="image" crossorigin="anonymous" src="'+imageUrl+'"/>'+
     '<!-- <div class="bbox"></div> -->'+
   '</div>'+
   '<div class="frame"></div>';
