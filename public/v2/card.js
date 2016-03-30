@@ -1,10 +1,5 @@
 // 在el的父元素上面增加触摸事件
 var Card = function(el, config) {
-  if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
-    this.ios = true;
-  } else {
-    this.ios = false;
-  }
   //
   this.config = config;
 
@@ -15,6 +10,7 @@ var Card = function(el, config) {
 
   // 生成html
   this.buildHtml(config.imageUrl);
+  this.setText();
   this.$image = this.$el.find('.image-container > .image');
 
   // 做图片自适应
@@ -29,6 +25,11 @@ var Card = function(el, config) {
   this.addTouchEvent();
 
 };
+
+Card.prototype.toObject = function() {
+  var bounds = getBounds(this.$image);
+  return {x: bounds[0], y: bounds[1], scale: this.attrs.scale, rotation: this.attrs.rotation}
+}
 
 //cb(imageBase64Url)
 Card.prototype.toImage = function(cb) {
@@ -78,7 +79,8 @@ Card.prototype.buildHtml = function(imageUrl) {
     '<img class="image" crossorigin="anonymous" src="'+imageUrl+'"/>'+
     '<!-- <div class="bbox"></div> -->'+
   '</div>'+
-  '<div class="frame"></div>';
+  '<div class="frame"></div>'+
+  '<div class="text"></div>';
 
   this.$el.html(htmlText);
   var imageContainer = this.$el.find(".image-container");
@@ -87,6 +89,34 @@ Card.prototype.buildHtml = function(imageUrl) {
     top: this.config.imageContainerTop,
     width: this.config.imageContainerWidth,
     height: this.config.imageContainerHeight
+  });
+};
+
+Card.prototype.setText = function() {
+  var _this = this;
+  this.applyText();
+  this.$el.find(".text").on("mousedown", function(e){
+    var text = prompt("请输入您的文字", _this.config.text);
+    if(text){
+      _this.config.text = text;
+      _this.applyText();
+    }
+    e.stopPropagation();
+  });
+};
+
+Card.prototype.applyText = function() {
+  var text = this.config.text;
+  var family = this.config.fontFamily;
+  var size = this.config.fontSize;
+  var left = this.config.fontLeft;
+  var top = this.config.fontTop;
+
+  var imgTag = '<img src="http://115.28.178.82:3002/font?text='+text+'&family='+family+'&size='+size+'"/>';
+  this.$el.find(".text").html(imgTag);
+  this.$el.find(".text").css({
+    left: left,
+    top: top,
   });
 };
 
@@ -146,17 +176,10 @@ Card.prototype.addTouchEvent = function() {
 };
 
 Card.prototype.applyTransform = function() {
-  if (this.ios===true) {
-    var transform =
-      "translate("+this.attrs.posX+"px,"+this.attrs.posY+"px) " +
-      "scale("+this.attrs.scale+","+this.attrs.scale+") " +
-      "rotate("+this.attrs.rotation+"deg) ";
-  } else {
-    var transform =
+  var transform =
       "translate3d("+this.attrs.posX+"px,"+this.attrs.posY+"px, 0) " +
       "scale3d("+this.attrs.scale+","+this.attrs.scale+", 0) " +
       "rotate("+this.attrs.rotation+"deg) ";
-  };
 
   //log(transform);
   var el = this.$image.get(0);
@@ -222,7 +245,18 @@ Card.prototype.kickback = function() {
     }
   }
 
+  // this.$image.css({
+  //   "-webkit-transition": "-webkit-transform .5s ease-in-out"
+  // });
+
   this.applyTransform();
+
+  // var _this = this;
+  // setTimeout(function(){
+  //   _this.$image.css("-webkit-transition", "");
+  // }, 1000);
+  
+  // this.$image..removeAttr("style");
 };
 
 Card.prototype.fit = function() {
@@ -238,11 +272,15 @@ Card.prototype.fit = function() {
     //      width: sv.width,
     //     height: sv.height
     //    });
+    console.log(sv.scale);
     _this.attrs.scale = _this.attrs.initScale = sv.scale;
     // 因为缩放是根据中心点进行的，所以要考虑挪回去点：(imageWidth-sv.width)/2
     _this.attrs.posX = sv.left-(imageWidth-sv.width)/2;
     _this.attrs.posY = sv.top-(imageHeight-sv.height)/2;
     _this.applyTransform();
+    
+    var o = _this.toObject();
+    // alert(o.x+','+o.y+','+o.scale+','+o.rotation);
   });
 };
 
@@ -299,7 +337,9 @@ function getBounds($el) {
   var rect = $el.get(0).getBoundingClientRect();
   // 因为getBoundingClientRect方法获取的是相对于document左上角的坐标，所以要减去其父元素
   // 的位置
-  var parentOffset = $el.parent().offset()
+  var parentOffset = $el.parent().offset();
+  // console.log(rect);
+  // console.log(parentOffset);
   return [rect.left-parentOffset.left, rect.top-parentOffset.top, rect.width, rect.height];
 }
 

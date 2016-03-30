@@ -12,7 +12,10 @@
     <input type="text">
   </div> -->
   
-  <div><span style="color: black">按住shift模拟多点触摸</span> <a href="javascript: window.card.toImage(function(data){console.log(data);});">生成图片</a></div>
+  <div>
+    <span style="color: black">按住shift模拟多点触摸</span> 
+    <a href="javascript: var o=window.card.toObject(); alert(o.x+', '+o.y);">生成图片</a>
+  </div>
 
   <div id="card"></div>
 

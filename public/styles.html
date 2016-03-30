@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <title>sketch</title>
+</head>
+<body>
+  
+  <img id="girl" crossorigin="anonymous" src="http://pic.52mxp.com/site/girl2.png"/>
+
+  <canvas id="c"></canvas>
+
+  <img id="girl2" src="./images/out_girl2.png"/>
+
+  <script type="text/javascript" src="./lib/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="./lib/sketching.js"></script>
+  <script>
+  function getImgSize(imgSrc, cb) {
+    var newImg = new Image();
+    newImg.onload = function() {
+      var height = newImg.height;
+      var width = newImg.width;
+      cb(width, height);
+    }
+    newImg.src = imgSrc;
+  }
+  var doSketch = function(ctx, width, height){
+    var st = 10;
+    var imgData = ctx.getImageData(0, 0, width, height);
+    sk.sketch(imgData, st);
+    ctx.putImageData(imgData, 0, 0);
+  };
+
+  $(document).ready(function() {
+    var src = $("#girl").attr("src");
+    getImgSize(src, function(width, height) {
+      var canvas = $("#c");
+      canvas.attr("width", width);
+      canvas.attr("height", height);
+      canvas.css("background-color", "pink");
+
+      var ctx = canvas.get(0).getContext('2d');
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage($("#girl").get(0), 0, 0, width, height);
+
+      doSketch(ctx, width, height);
+    });
+  });
+  </script>
+</body>
+</html>

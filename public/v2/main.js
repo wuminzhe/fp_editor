@@ -10,6 +10,11 @@ $(document).ready(function(){
   var width = $('body').width()-70;
   var s = width/1000;
   var height = 1500*s;
+
+  var fontSize = 200*s;
+  var fontLeft = 20*s;
+  var fontTop = 1300*s;
+
   var imageContainerLeft = 47*s;
   var imageContainerTop = 63*s;
   var imageContainerWidth = 910*s;
@@ -17,15 +22,20 @@ $(document).ready(function(){
   console.log(imageContainerWidth+", "+imageContainerHeight);
 
   window.card = new Card("#card", {
-    width: width, 
+    width: width,
     height: height,
     // imageUrl: 'http://pic1.sc.chinaz.com/files/pic/pic9/201401/apic134.jpg',
-//    imageUrl: 'images/girl.jpg',
-    imageUrl: 'http://img.memeing.cn/2006-1-1-2ae618ae5df22b8ee469fd299b54d7eb73895fd8_crop',
+    imageUrl: 'images/girl.jpg',
+//    imageUrl: 'http://img.memeing.cn/2006-1-1-2ae618ae5df22b8ee469fd299b54d7eb73895fd8_crop',
     imageContainerLeft: imageContainerLeft,
     imageContainerTop: imageContainerTop,
     imageContainerWidth: imageContainerWidth, 
-    imageContainerHeight: imageContainerHeight
+    imageContainerHeight: imageContainerHeight,
+    text: '恭喜发财',
+    fontFamily: 2,
+    fontSize: fontSize,
+    fontLeft: fontLeft,
+    fontTop: fontTop
   });
 
   var left = ($('body').width() - width)/2;
